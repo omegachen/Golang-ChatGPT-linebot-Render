@@ -22,32 +22,34 @@ func getChatGPTresponse(ctx context.Context, question string) string {
 		return "MaxTokens Conversion Error happened!"
 	}
 
-	// req := gogpt.ChatCompletionRequest{
-	// 	Model:     gogpt.GPT3Dot5Turbo16K0613,
-	// 	MaxTokens: maxtokens,
-	// 	N:         1,
-	// 	Messages: []gogpt.ChatCompletionMessage{
-	// 		{Role: "assistant", Content: question},
-	// 	},
-	// 	Stream: false,
+	req := gogpt.ChatCompletionRequest{
+		Model:     gogpt.GPT3Dot5Turbo16K0613,
+		MaxTokens: maxtokens,
+		N:         1,
+		Messages: []gogpt.ChatCompletionMessage{
+			{Role: "assistant", Content: question},
+		},
+		Stream:      false,
+		Temperature: 0,
+	}
+
+	// req := gogpt.CompletionRequest{
+	// 	Model:       gogpt.GPT3Dot5Turbo16K0613,
+	// 	MaxTokens:   maxtokens,
+	// 	Prompt:      question,
 	// 	Temperature: 0,
+	// 	N:           1,
 	// }
 
-	req := gogpt.CompletionRequest{
-		Model:       gogpt.GPT3Dot5Turbo16K0613,
-		MaxTokens:   maxtokens,
-		Prompt:      question,
-		Temperature: 0,
-		N:           1,
-	}
-	resp, err := c.CreateCompletion(ctx, req)
+	resp, err := c.CreateChatCompletion(ctx, req)
+
 	if err != nil {
 		log.Print(err)
 		return "You got an error!"
 	} else {
-		fmt.Println(resp.Choices[0].Text)
+		fmt.Println(resp.Choices[0].Message.Content)
 
-		return resp.Choices[0].Text
+		return resp.Choices[0].Message.Content
 	}
 
 }
