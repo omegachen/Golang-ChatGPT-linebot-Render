@@ -9,7 +9,7 @@ import (
 	"strconv"
 
 	"github.com/line/line-bot-sdk-go/v7/linebot"
-	gogpt "github.com/sashabaranov/go-gpt3"
+	gogpt "github.com/sashabaranov/go-openai"
 )
 
 func getChatGPTresponse(ctx context.Context, question string) string {
@@ -22,14 +22,27 @@ func getChatGPTresponse(ctx context.Context, question string) string {
 		return "MaxTokens Conversion Error happened!"
 	}
 
+	// req := gogpt.ChatCompletionRequest{
+	// 	Model:     gogpt.GPT3Dot5Turbo16K0613,
+	// 	MaxTokens: maxtokens,
+	// 	N:         1,
+	// 	Messages: []gogpt.ChatCompletionMessage{
+	// 		{Role: "assistant", Content: question},
+	// 	},
+	// 	Stream: false,
+	// 	Temperature: 0,
+	// }
+
 	req := gogpt.CompletionRequest{
-		Model:       "text-davinci-003",
+		Model:       gogpt.GPT3Dot5Turbo16K0613,
 		MaxTokens:   maxtokens,
 		Prompt:      question,
 		Temperature: 0,
+		N:           1,
 	}
 	resp, err := c.CreateCompletion(ctx, req)
 	if err != nil {
+		log.Print(err)
 		return "You got an error!"
 	} else {
 		fmt.Println(resp.Choices[0].Text)
